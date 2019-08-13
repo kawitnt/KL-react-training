@@ -2,14 +2,23 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import DataService from '../../Service/DataService';
 import Button from 'react-bootstrap/Button';
+import SmileModal from './SmileModal';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 class SmileTable extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            data : null
+            data : null,
+            show : false,
+            showSA : false
         }
+        this.checkData = this.checkData.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleHide = this.handleHide.bind(this);
+        this.handleClickSA = this.handleClickSA.bind(this);
+        this.handleHideSA = this.handleHideSA.bind(this);
     }
 
     componentDidMount() {
@@ -22,7 +31,24 @@ class SmileTable extends React.Component {
             console.log(e);
         })
     }
-    checkData(handleClick) {
+
+    handleClick() {
+        this.setState({show:true});
+    }
+
+    handleHide() {
+        this.setState({show:false});
+    }
+
+    handleClickSA() {
+        this.setState({showSA:true});
+    }
+
+    handleHideSA() {
+        this.setState({showSA:false});
+    }
+
+    checkData() {
         if(this.state.data){
             return this.state.data.map((obj,index)=>{
                 return(
@@ -30,7 +56,8 @@ class SmileTable extends React.Component {
                         <tr >
                             <td>{index}</td>
                             <td>{obj.Ttext}</td>
-                            <td><Button onClick={handleClick}>show</Button></td>
+                            <td><Button onClick={this.handleClick}>show</Button></td>
+                            <td><Button onClick={this.handleClickSA}>show</Button></td>
                         </tr>
                     </React.Fragment>
                 )
@@ -47,14 +74,23 @@ class SmileTable extends React.Component {
                             <th>Head</th>
                             <th>Head2</th>
                             <th>Head3</th>
+                            <th>Head4</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            this.checkData(this.props.handleClick)
+                            this.checkData()
                         }
                     </tbody>
                 </Table>
+                <SmileModal show={this.state.show} Hide={this.handleHide} />
+                <SweetAlert 
+                    success
+                    title='OK!'
+                    show={this.state.showSA} 
+                    onConfirm={this.handleHideSA}
+                    onCancel={this.handleHideSA}
+                />
             </>
         );
     }
